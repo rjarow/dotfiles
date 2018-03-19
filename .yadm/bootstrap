@@ -9,3 +9,6 @@ yadm submodule update --recursive --init
 
 echo "Install spf13-vim"
 curl https://j.mp/spf13-vim3 -L > spf13-vim.sh && sh spf13-vim.sh
+
+echo "Change shell to zsh"
+chsh -s `which zsh`
