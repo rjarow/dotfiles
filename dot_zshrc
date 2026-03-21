@@ -77,7 +77,7 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 
 # Aliases - chezmoi
-alias brewsync='brew bundle dump --file=$(chezmoi source-path)/Brewfile --force'
+alias brewsync='brew bundle dump --file=$(chezmoi source-path)/Brewfile --force && git -C $(chezmoi source-path) add Brewfile && git -C $(chezmoi source-path) commit -m "update Brewfile" && git -C $(chezmoi source-path) push'
 
 # Aliases - git
 alias g="git"
