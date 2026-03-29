@@ -1,0 +1,22 @@
+{{- if eq .chezmoi.os "linux" -}}
+#!/bin/bash
+set -euo pipefail
+
+# Install Linuxbrew if not present
+if ! command -v brew &>/dev/null; then
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+# Core packages (subset of Brewfile that works on Linux)
+brew install \
+  atuin bat btop bun chezmoi dust duf eza fd fzf git-delta \
+  go jq lazygit neovim ripgrep starship tmux yazi zoxide \
+  zsh-autosuggestions zsh-syntax-highlighting
+
+# sesh (tmux session manager)
+brew install joshmedeski/sesh/sesh
+
+# opensessions (tmux sidebar) — installed via TPM, just ensure bun is available
+echo "opensessions will be installed via TPM on first tmux launch"
+{{ end -}}

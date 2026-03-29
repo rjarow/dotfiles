@@ -1,0 +1,71 @@
+#:schema https://github.com/joshmedeski/sesh/raw/main/sesh.schema.json
+
+# -- Global --
+sort_order = ["config", "tmux", "zoxide"]
+
+# -- Windows (reusable across sessions) --
+
+[[window]]
+name = "claude"
+startup_script = "claude"
+
+[[window]]
+name = "oc1"
+startup_script = "opencode"
+
+[[window]]
+name = "oc2"
+startup_script = "opencode"
+
+[[window]]
+name = "oc3"
+startup_script = "opencode"
+
+[[window]]
+name = "oc4"
+startup_script = "opencode"
+
+[[window]]
+name = "shell"
+
+[[window]]
+name = "broker"
+startup_script = "cd ~/projects/agent-peers && bun run src/index.ts"
+
+# -- Sessions --
+
+[[session]]
+name = "pith"
+path = "~/projects/pith"
+startup_command = "claude"
+windows = ["oc1", "oc2", "oc3", "oc4", "shell"]
+
+[[session]]
+name = "spendah"
+path = "~/projects/spendah"
+startup_command = "claude"
+windows = ["oc1", "oc2", "shell"]
+
+[[session]]
+name = "spinterm"
+path = "~/projects/spinterm"
+startup_command = "claude"
+windows = ["shell"]
+
+[[session]]
+name = "devbox"
+path = "~/projects"
+startup_command = "claude"
+windows = ["shell"]
+
+[[session]]
+name = "agent-peers"
+path = "~/projects/agent-peers"
+startup_command = "claude"
+windows = ["broker", "shell"]
+
+# -- Wildcard for any new project --
+
+[[wildcard]]
+pattern = "~/projects/*"
+startup_command = "nvim"

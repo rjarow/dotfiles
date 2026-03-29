@@ -1,0 +1,11 @@
+{
+  "plugins": [],
+  "mux": "tmux",
+  "theme": "transparent",
+  "sidebarWidth": 30,
+  "sidebarPosition": "right",
+  "detailPanelHeights": {
+    "first": 22,
+    "spendah": 9
+  }
+}

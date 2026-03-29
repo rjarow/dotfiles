@@ -1,0 +1,180 @@
+# =============================================================================
+# .zshrc — portable across macOS and Linux (chezmoi-managed)
+# =============================================================================
+
+# Homebrew
+{{- if eq .chezmoi.os "darwin" }}
+if [ -x /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+{{- else }}
+if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+{{- end }}
+
+# Path additions
+export PATH="$HOME/.local/bin:$HOME/go/bin:$PATH"
+
+# -----------------------------------------------------------------------------
+# History
+# -----------------------------------------------------------------------------
+HISTFILE="${HOME}/.local/share/zsh/history"
+mkdir -p "$(dirname "$HISTFILE")"
+HISTSIZE=100000
+SAVEHIST=100000
+setopt HIST_IGNORE_ALL_DUPS HIST_SAVE_NO_DUPS HIST_REDUCE_BLANKS
+setopt INC_APPEND_HISTORY SHARE_HISTORY EXTENDED_HISTORY
+
+# -----------------------------------------------------------------------------
+# Shell options
+# -----------------------------------------------------------------------------
+setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS INTERACTIVE_COMMENTS CORRECT
+
+# Better tab completion
+autoload -Uz compinit && compinit
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+zstyle ':completion:*' menu select
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+
+# Key bindings
+bindkey '^[[A' up-line-or-search
+bindkey '^[[B' down-line-or-search
+
+# -----------------------------------------------------------------------------
+# Environment
+# -----------------------------------------------------------------------------
+export EDITOR="nvim"
+export VISUAL="nvim"
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+export CLICOLOR=1
+
+# -----------------------------------------------------------------------------
+# Aliases — modern replacements
+# -----------------------------------------------------------------------------
+alias ls='eza --color=auto --icons=auto'
+alias ll='eza -la --icons=auto --git'
+alias la='eza -a --icons=auto'
+alias lt='eza -T --icons=auto --level=2'
+alias l='eza -l --icons=auto'
+
+alias cat='bat --paging=never'
+alias catp='bat --plain --paging=never'
+alias du='dust'
+alias df='duf'
+alias top='btop'
+alias rg='rg --smart-case'
+alias find='fd'
+
+# Git
+alias g='git'
+alias gs='git status'
+alias gd='git diff'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git log --oneline -20'
+alias gco='git checkout'
+alias lg='lazygit'
+
+# Docker
+alias dc='docker compose'
+alias dcu='docker compose up -d'
+alias dcd='docker compose down'
+alias dcl='docker compose logs -f'
+alias dcp='docker compose ps'
+alias dcr='docker compose restart'
+
+# Navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias proj='cd ~/projects'
+
+# Chezmoi
+alias brewsync='brew bundle dump --file=$(chezmoi source-path)/Brewfile --force && git -C $(chezmoi source-path) add Brewfile && git -C $(chezmoi source-path) commit -m "update Brewfile" && git -C $(chezmoi source-path) push'
+
+# -----------------------------------------------------------------------------
+# Yazi — cd into directory on exit with 'y'
+# -----------------------------------------------------------------------------
+function y() {
+    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+    yazi "$@" --cwd-file="$tmp"
+    if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+        builtin cd -- "$cwd"
+    fi
+    rm -f -- "$tmp"
+}
+
+# -----------------------------------------------------------------------------
+# Tool integrations
+# -----------------------------------------------------------------------------
+
+# FZF
+{{- if eq .chezmoi.os "darwin" }}
+if [ -f /opt/homebrew/opt/fzf/shell/completion.zsh ]; then
+  source /opt/homebrew/opt/fzf/shell/completion.zsh
+  source /opt/homebrew/opt/fzf/shell/key-bindings.zsh
+fi
+{{- else }}
+if [ -f /home/linuxbrew/.linuxbrew/opt/fzf/shell/completion.zsh ]; then
+  source /home/linuxbrew/.linuxbrew/opt/fzf/shell/completion.zsh
+  source /home/linuxbrew/.linuxbrew/opt/fzf/shell/key-bindings.zsh
+fi
+{{- end }}
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
+export FZF_DEFAULT_OPTS='--height 40% --border --layout=reverse'
+export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:500 {}'"
+
+# Zoxide
+eval "$(zoxide init zsh)"
+
+# Atuin
+if command -v atuin &>/dev/null; then
+  eval "$(atuin init zsh --disable-up-arrow)"
+fi
+
+# Starship prompt
+eval "$(starship init zsh)"
+
+# Direnv
+if command -v direnv &>/dev/null; then
+  eval "$(direnv hook zsh)"
+fi
+
+# Bun
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+if [ -d "$HOME/.bun" ]; then
+  export BUN_INSTALL="$HOME/.bun"
+  export PATH="$BUN_INSTALL/bin:$PATH"
+fi
+
+# Nix
+[ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ] && . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+[ -e "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ] && . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+
+# Load custom env
+[ -f "$HOME/.local/bin/env" ] && source "$HOME/.local/bin/env"
+
+# -----------------------------------------------------------------------------
+# Plugins (must be last)
+# -----------------------------------------------------------------------------
+{{- if eq .chezmoi.os "darwin" }}
+[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] && source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+[ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] && source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+{{- else }}
+[ -f /home/linuxbrew/.linuxbrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] && source /home/linuxbrew/.linuxbrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+[ -f /home/linuxbrew/.linuxbrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] && source /home/linuxbrew/.linuxbrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+{{- end }}
+
+{{- if eq .chezmoi.os "linux" }}
+
+# -----------------------------------------------------------------------------
+# Devbox-specific aliases
+# -----------------------------------------------------------------------------
+alias dangerclaude='claude --dangerously-skip-permissions --dangerously-load-development-channels server:claude-peers'
+alias dclaudet='claude --dangerously-skip-permissions --dangerously-load-development-channels server:claude-peers --channels plugin:telegram@claude-plugins-official'
+{{- end }}
