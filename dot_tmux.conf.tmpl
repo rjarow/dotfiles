@@ -33,7 +33,11 @@ set -sg escape-time 0
 set -g focus-events on
 
 # Use zsh
+{{- if eq .chezmoi.os "darwin" }}
+set -g default-shell /bin/zsh
+{{- else }}
 set -g default-shell /home/linuxbrew/.linuxbrew/bin/zsh
+{{- end }}
 
 # ---- Keybindings ----
 
