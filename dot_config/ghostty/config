@@ -3,11 +3,14 @@ font-family = LiterationMono Nerd Font
 font-size = 16
 
 # Theme
-background = #282c34
-foreground = #abb2bf
+#background = #282c34
+#foreground = #abb2bf
 cursor-color = #cccccc
 
 # General
 window-padding-x = 10
 window-padding-y = 10
 macos-option-as-alt = true
+clipboard-read = allow
+clipboard-write = allow
+theme = tokyonight
