@@ -74,7 +74,7 @@ alias gd='git diff'
 alias ga='git add'
 alias gc='git commit'
 alias gp='git push'
-alias gl='git log --oneline -20'
+alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 alias gco='git checkout'
 alias lg='lazygit'
 
@@ -178,3 +178,8 @@ fi
 alias dangerclaude='claude --dangerously-skip-permissions --dangerously-load-development-channels server:claude-peers'
 alias dclaudet='claude --dangerously-skip-permissions --dangerously-load-development-channels server:claude-peers --channels plugin:telegram@claude-plugins-official'
 {{- end }}
+
+# -----------------------------------------------------------------------------
+# Machine-local overrides (not tracked by chezmoi)
+# -----------------------------------------------------------------------------
+[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
