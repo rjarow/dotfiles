@@ -8,15 +8,21 @@ if ! command -v brew &>/dev/null; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
-# Core packages (subset of Brewfile that works on Linux)
+# Core packages (subset of Brewfile that works on Linuxbrew)
+# Note: bun is not in core linuxbrew — installed separately below
 brew install \
-  atuin bat btop bun chezmoi dust duf eza fd fzf git-delta \
+  atuin bat btop chezmoi dust duf eza fd fzf git-delta \
   go jq lazygit neovim ripgrep starship tmux yazi zoxide \
   zsh-autosuggestions zsh-syntax-highlighting
 
 # sesh (tmux session manager)
 brew install joshmedeski/sesh/sesh
 
-# opensessions (tmux sidebar) — installed via TPM, just ensure bun is available
+# bun — official installer (not available on linuxbrew core)
+if ! command -v bun &>/dev/null; then
+  curl -fsSL https://bun.sh/install | bash
+fi
+
+# opensessions (tmux sidebar) is installed by TPM, which needs bun at runtime
 echo "opensessions will be installed via TPM on first tmux launch"
 {{ end -}}
