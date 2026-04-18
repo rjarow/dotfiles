@@ -1,17 +1,156 @@
-add_newline = true
+"$schema" = 'https://starship.rs/config-schema.json'
 
-[character]
-success_symbol = "[➜](bold green)"
-error_symbol = "[✗](bold red)"
+format = """
+$os\
+$username\
+$hostname\
+$directory\
+$git_branch\
+$git_status\
+$direnv\
+$jobs\
+$sudo\
+$battery\
+$cmd_duration\
+$line_break\
+$character"""
+
+right_format = """$time"""
+
+add_newline = true
+palette = "catppuccin_mocha"
+
+[os]
+disabled = false
+format = "[$symbol ]($style)"
+style = "bold lavender"
+
+[os.symbols]
+Macos = ""
+Linux = ""
+Ubuntu = ""
+Arch = ""
+Debian = ""
+Fedora = ""
+Alpine = ""
+Android = ""
+
+[username]
+show_always = true
+style_user = "bold peach"
+style_root = "bold red"
+format = "[$user]($style)"
+
+[hostname]
+ssh_only = false
+ssh_symbol = " "
+style = "bold mauve"
+format = "[@$hostname$ssh_symbol]($style)  "
+
+[directory]
+style = "bold blue"
+truncation_length = 4
+truncation_symbol = "…/"
+read_only = " 󰌾"
+format = "[ $path]($style)[$read_only]($read_only_style)  "
+
+[git_branch]
+symbol = " "
+style = "bold green"
+format = "[$symbol$branch]($style)"
+
+[git_status]
+style = "red"
+format = "[$all_status$ahead_behind]($style)  "
+conflicted = "="
+ahead = " ⇡${count}"
+behind = " ⇣${count}"
+diverged = " ⇡${ahead_count}⇣${behind_count}"
+up_to_date = ""
+untracked = " ?${count}"
+stashed = " \\$${count}"
+modified = " ✎${count}"
+staged = " +${count}"
+renamed = " »${count}"
+deleted = " ✘${count}"
+
+[direnv]
+disabled = false
+symbol = " "
+style = "yellow"
+format = "[$symbol$loaded$allowed]($style)  "
+loaded_msg = "on"
+unloaded_msg = "off"
+allowed_msg = ""
+not_allowed_msg = "blocked"
+denied_msg = "denied"
+
+[jobs]
+symbol = "⚡"
+style = "bold yellow"
+number_threshold = 1
+format = "[$symbol $number]($style)  "
+
+[sudo]
+disabled = false
+symbol = "󰞀 "
+style = "bold red"
+format = "[$symbol]($style)"
+
+[battery]
+disabled = false
+format = "[$symbol$percentage]($style)  "
+
+[[battery.display]]
+threshold = 20
+style = "bold red"
+discharging_symbol = "󰁻 "
+
+[[battery.display]]
+threshold = 40
+style = "yellow"
+discharging_symbol = "󰁽 "
 
 [cmd_duration]
 min_time = 2000
-format = "took [$duration](bold yellow)"
+style = "yellow"
+format = "took [$duration]($style)"
 
-[directory]
-truncation_length = 3
-truncation_symbol = "…/"
+[time]
+disabled = false
+time_format = "%H:%M"
+style = "overlay1"
+format = "[ $time]($style)"
 
-[git_branch]
-symbol = "🌱 "
-truncation_length = 20
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+vicmd_symbol = "[❮](bold green)"
+
+[palettes.catppuccin_mocha]
+rosewater = "#f5e0dc"
+flamingo = "#f2cdcd"
+pink = "#f5c2e7"
+mauve = "#cba6f7"
+red = "#f38ba8"
+maroon = "#eba0ac"
+peach = "#fab387"
+yellow = "#f9e2af"
+green = "#a6e3a1"
+teal = "#94e2d5"
+sky = "#89dceb"
+sapphire = "#74c7ec"
+blue = "#89b4fa"
+lavender = "#b4befe"
+text = "#cdd6f4"
+subtext1 = "#bac2de"
+subtext0 = "#a6adc8"
+overlay2 = "#9399b2"
+overlay1 = "#7f849c"
+overlay0 = "#6c7086"
+surface2 = "#585b70"
+surface1 = "#45475a"
+surface0 = "#313244"
+base = "#1e1e2e"
+mantle = "#181825"
+crust = "#11111b"
